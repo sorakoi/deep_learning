@@ -40,3 +40,28 @@ X_test = torch.FloatTensor(X_test)
 y_train = torch.FloatTensor(y_train).reshape(-1, 1)  # 变成(16512,1)列向量  reshape让y变列向量,方便算loss（因为原始数据是一个数组，要把它变成1列的矩阵）
 y_test = torch.FloatTensor(y_test).reshape(-1, 1)
 print('reshape后的测试集标签\n',y_test)
+
+class MLP(nn.Module):
+    def __init__(self, input_size, hidden_size, output_size):
+        super(MLP, self).__init__()
+        # 定义网络层
+        self.fc1 = nn.Linear(input_size, hidden_size)  # 输入层→隐藏层
+        self.relu = nn.ReLU()  # 激活函数
+        self.fc2 = nn.Linear(hidden_size, output_size)  # 隐藏层→输出层
+
+    def forward(self, x):
+        # 前向传播
+        out = self.fc1(x)  # 第一层线性变换
+        out = self.relu(out)  # 激活
+        out = self.fc2(out)  # 第二层线性变换
+        return out
+
+
+# 创建模型实例
+input_size = 8  # 8个特征
+hidden_size = 64  # 隐藏层64个神经元(可调)
+output_size = 1  # 输出1个值(房价)
+
+model = MLP(input_size, hidden_size, output_size)
+print(model)
+print(f"\n模型参数总数: {sum(p.numel() for p in model.parameters())}")
