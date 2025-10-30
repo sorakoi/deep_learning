@@ -70,3 +70,52 @@ output_size = 1  # 输出1个值(房价)
 model = MLP(input_size, hidden_size, output_size)
 print(model)
 print(f"\n模型参数总数: {sum(p.numel() for p in model.parameters())}")
+
+# PART4.定义损失函数和优化器
+
+# 损失函数:用来衡量预测值和真实值差多少
+criterion = nn.MSELoss()  # Mean Squared Error,均方误差
+
+# 优化器:用来更新模型参数
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+
+print(f"损失函数: {criterion}")
+print(f"优化器: {optimizer}")
+
+
+# PART5.模型训练
+
+# 训练参数
+num_epochs = 100  # 训练100轮
+batch_size = 64  # 每次喂64个样本
+
+# 记录loss变化(用来画图)
+train_losses = []
+
+print("开始训练...")
+for epoch in range(num_epochs):
+    model.train()  # 设置为训练模式
+
+    # 前向传播
+    outputs = model(X_train)  # 模型预测
+    loss = criterion(outputs, y_train)  # 计算loss 注意这里criterion是个nn.MSELoss对象 loss = 计算出来的损失值(结果)
+
+    # 反向传播和优化
+    optimizer.zero_grad()  # 清空上一轮的梯度
+    # 为什么要清零? PyTorch默认会累加梯度，如果不清零,这轮的梯度会叠加到上一轮,导致错误!
+    loss.backward()  # 自动计算所有参数的梯度
+    # 这就是PyTorch的魔法!不用手动求导
+    # 内部用链式法则计算loss对每个参数的偏导数
+    # 注意：loss是张量，pytorch的张量自带.backward()函数
+    optimizer.step()  # 根据梯度更新参数
+    # 每个参数 = 旧值 - 学习率 × 梯度
+    # 让loss变小的方向前进一小步
+
+    # 记录loss
+    train_losses.append(loss.item())  #把PyTorch张量转成普通Python数字 方便打印和记录
+
+    # 每10轮打印一次
+    if (epoch + 1) % 10 == 0:
+        print(f'Epoch [{epoch + 1}/{num_epochs}], Loss: {loss.item():.4f}')
+
+print("训练完成!")
