@@ -41,16 +41,21 @@ y_train = torch.FloatTensor(y_train).reshape(-1, 1)  # 变成(16512,1)列向量 
 y_test = torch.FloatTensor(y_test).reshape(-1, 1)
 print('reshape后的测试集标签\n',y_test)
 
-class MLP(nn.Module):
+# PART3.搭建MLP神经网络
+
+class MLP(nn.Module):   # 注意，这里创建继承nn.Module的类，nn.Moudle是提前设置好的一个神经网络的基类，继承它能自动获得很多功能:参数管理、GPU加速、保存/加载模型等
     def __init__(self, input_size, hidden_size, output_size):
-        super(MLP, self).__init__()
+        super(MLP, self).__init__()  # 调用父类nn.Module的初始化方法，必须写!不然PyTorch不知道这是个神经网络
         # 定义网络层
         self.fc1 = nn.Linear(input_size, hidden_size)  # 输入层→隐藏层
         self.relu = nn.ReLU()  # 激活函数
         self.fc2 = nn.Linear(hidden_size, output_size)  # 隐藏层→输出层
+        # 可以看到类里有很多属性，包括fc1、fc2、relu
+
 
     def forward(self, x):
-        # 前向传播
+        # 这就是前向传播!数据像流水一样经过网络
+        # 对应还有backward(反向传播) PyTorch会自动计算backward,你只需定义forward!
         out = self.fc1(x)  # 第一层线性变换
         out = self.relu(out)  # 激活
         out = self.fc2(out)  # 第二层线性变换
