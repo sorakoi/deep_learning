@@ -119,3 +119,9 @@ for epoch in range(num_epochs):
         print(f'Epoch [{epoch + 1}/{num_epochs}], Loss: {loss.item():.4f}')
 
 print("训练完成!")
+
+model.eval()  # 切换到评估模式
+with torch.no_grad():  # 测试时不需要计算梯度
+    test_outputs = model(X_test)
+    test_loss = criterion(test_outputs, y_test)
+    print(f'测试集Loss: {test_loss.item():.4f}')
