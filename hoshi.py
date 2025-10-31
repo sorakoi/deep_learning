@@ -1,3 +1,6 @@
+# Himari Department of Sumisora University
+# Hoshiori Lab.
+
 import torch
 import torch.nn as nn
 import torch.optim as optim
